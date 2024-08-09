@@ -115,3 +115,23 @@ create table Exercises (
     created_at timestamp,
     updated_at timestamp
 );
+
+create table Discussions (
+    id bigint primary key generated always as identity,
+    lesson_id bigint references Lessons (id),
+    body text,
+    created_at timestamp,
+    updated_at timestamp
+);
+
+create type BlogStatus as enum ('created', 'in moderation', 'published', 'archived');
+
+create table Blog (    
+    id bigint primary key generated always as identity,
+    user_id references Users (id),
+    title_article varchar(255),
+    body_article text,
+    status_id BlogStatus,
+    created_at timestamp,
+    updated_at timestamp
+);
