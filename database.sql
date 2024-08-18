@@ -2,8 +2,8 @@ create table Courses (
     id bigint primary key generated always as identity,
     name varchar(255),
     body text,
-    created_at timestamp,
-    updated_at timestamp
+    created_at timestamp default current_timestamp,
+    updated_at timestamp default current_timestamp
 );
 
 create table Modules (
@@ -11,8 +11,9 @@ create table Modules (
     course_id bigint references Courses (id),
     name varchar(255),
     body text,
-    created_at timestamp,
-    updated_at timestamp
+    created_at timestamp default current_timestamp,
+    updated_at timestamp default current_timestamp,
+    deletad_at timestamp
 );
 
 create table Programs (
@@ -21,8 +22,8 @@ create table Programs (
     name varchar(255),
     cost int,
     type varchar(255),
-    created_at timestamp,
-    updated_at timestamp
+    created_at timestamp default current_timestamp,
+    updated_at timestamp default current_timestamp
 );
 
 create table Lessons (
@@ -31,16 +32,17 @@ create table Lessons (
     body text,
     link_on_video varchar(255),
     lesson_count int,
-    created_at timestamp,
-    updated_at timestamp,
-    course_id int references Courses (id)
+    created_at timestamp default current_timestamp,
+    updated_at timestamp default current_timestamp,
+    course_id int references Courses (id),
+    deletad_at timestamp
 );
 
 create table TeachingGroups (
     id bigint primary key generated always as identity,
     slack varchar(255),
-    created_at timestamp,
-    updated_at timestamp
+    created_at timestamp default current_timestamp,
+    updated_at timestamp default current_timestamp
 );
 
 create table Users (
@@ -50,38 +52,48 @@ create table Users (
     password_hash varchar(255),
     role varchar(50),
     teaching_group bigint references TeachingGroups (id),
-    created_at timestamp,
-    updated_at timestamp
+    created_at timestamp default current_timestamp,
+    updated_at timestamp default current_timestamp,
+    deletad_at timestamp
 );
 
-create type EnrollmentsStatus as enum ('active'), ('pending'), ('cancelled'), ('completed');
+create type EnrollmentsStatus as enum ('active'),
+('pending'),
+('cancelled'),
+('completed');
 
 create table Enrollments (
     id bigint primary key generated always as identity,
     user_id bigint references Users (id),
     program_id bigint references Programs (id),
-    status_id int references EnrollmentsStatus (id),
+    status_id EnrollmentsStatus,
     created_at timestamp,
     updated_at timestamp
 );
 
-create type PaymentsStatus as enum ('pending'), ('paid'), ('failed'), ('refunded');
+create type PaymentsStatus as enum ('pending'),
+('paid'),
+('failed'),
+('refunded');
 
 create table Payments (
     id bigint primary key generated always as identity,
-    status_id int references PaymentsStatus (id),
+    status_id PaymentsStatus,
     day_payment date,
     created_at timestamp,
     updated_at timestamp
 );
 
-create type ProgramStatus as enum ('active'), ('completed'), ('pending'), ('cancelled');
+create type ProgramStatus as enum ('active'),
+('completed'),
+('pending'),
+('cancelled');
 
 create table ProgramCompletions (
     id bigint primary key generated always as identity,
     user_id bigint references Users (id),
     program_id bigint references Programs (id),
-    status_id references ProgramStatus (id),
+    status_id ProgramStatus,
     start_date date,
     end_date date,
     created_at timestamp,
@@ -124,9 +136,14 @@ create table Discussions (
     updated_at timestamp
 );
 
-create type BlogStatus as enum ('created', 'in moderation', 'published', 'archived');
+create type BlogStatus as enum (
+    'created',
+    'in moderation',
+    'published',
+    'archived'
+);
 
-create table Blog (    
+create table Blog (
     id bigint primary key generated always as identity,
     user_id references Users (id),
     title_article varchar(255),
@@ -135,3 +152,13 @@ create table Blog (
     created_at timestamp,
     updated_at timestamp
 );
+
+create table ProgramModules (
+    program_id bigint primary key references Programs (id),
+    module_id bigint primary key references Modules (id)
+);
+
+create table CourseModules (
+    module_id bigint primary key Modules (id),
+    course_id bigint primary key Courses (id)
+)
