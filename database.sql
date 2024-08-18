@@ -154,11 +154,13 @@ create table Blog (
 );
 
 create table ProgramModules (
-    program_id bigint primary key references Programs (id),
-    module_id bigint primary key references Modules (id)
+    program_id bigint references Programs (id),
+    module_id bigint references Modules (id),
+    primary key (program_id, module_id)
 );
 
 create table CourseModules (
-    module_id bigint primary key Modules (id),
-    course_id bigint primary key Courses (id)
-)
+    module_id bigint references Modules (id),
+    course_id bigint references Courses (id),
+    primary key (module_id, course_id)
+);
