@@ -8,9 +8,8 @@ create table Courses (
 
 create table Modules (
     id bigint primary key generated always as identity,
-    course_id bigint references Courses (id),
     name varchar(255),
-    body text,
+    body text,                              
     created_at timestamp default current_timestamp,
     updated_at timestamp default current_timestamp,
     deletad_at timestamp
@@ -18,7 +17,6 @@ create table Modules (
 
 create table Programs (
     id bigint primary key generated always as identity,
-    module_id bigint references Courses (id),
     name varchar(255),
     cost int,
     type varchar(255),
@@ -36,6 +34,18 @@ create table Lessons (
     updated_at timestamp default current_timestamp,
     course_id int references Courses (id),
     deletad_at timestamp
+);
+
+create table CourseModules (
+    module_id bigint references Modules (id),
+    course_id bigint references Courses (id),
+    primary key (module_id, course_id)
+);
+
+create table ProgramModules (
+    program_id bigint references Programs (id),
+    module_id bigint references Modules (id),
+    primary key (program_id, module_id)
 );
 
 create table TeachingGroups (
@@ -151,22 +161,10 @@ create type BlogStatus as enum (
 
 create table Blog (
     id bigint primary key generated always as identity,
-    user_id references Users (id),
+    user_id bigint references Users (id),
     title_article varchar(255),
     body_article text,
     status_id BlogStatus,
     created_at timestamp,
     updated_at timestamp
-);
-
-create table ProgramModules (
-    program_id bigint references Programs (id),
-    module_id bigint references Modules (id),
-    primary key (program_id, module_id)
-);
-
-create table CourseModules (
-    module_id bigint references Modules (id),
-    course_id bigint references Courses (id),
-    primary key (module_id, course_id)
 );
