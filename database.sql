@@ -9,7 +9,7 @@ create table Courses (
 create table Modules (
     id bigint primary key generated always as identity,
     name varchar(255),
-    body text,                              
+    body text,
     created_at timestamp default current_timestamp,
     updated_at timestamp default current_timestamp,
     deletad_at timestamp
@@ -32,7 +32,7 @@ create table Lessons (
     lesson_count int,
     created_at timestamp default current_timestamp,
     updated_at timestamp default current_timestamp,
-    course_id int references Courses (id),
+    course_id bigint references Courses (id),
     deletad_at timestamp
 );
 
@@ -168,3 +168,4 @@ create table Blog (
     created_at timestamp,
     updated_at timestamp
 );
+
