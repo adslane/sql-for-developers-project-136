@@ -57,10 +57,12 @@ create table Users (
     deletad_at timestamp
 );
 
-create type EnrollmentsStatus as enum ('active'),
-('pending'),
-('cancelled'),
-('completed');
+create type EnrollmentsStatus as enum (
+    'active',
+    'pending',
+    'cancelled',
+    'completed'
+);
 
 create table Enrollments (
     id bigint primary key generated always as identity,
@@ -71,10 +73,12 @@ create table Enrollments (
     updated_at timestamp
 );
 
-create type PaymentsStatus as enum ('pending'),
-('paid'),
-('failed'),
-('refunded');
+create type PaymentsStatus as enum (
+    'pending',
+    'paid',
+    'failed',
+    'refunded'
+);
 
 create table Payments (
     id bigint primary key generated always as identity,
@@ -84,10 +88,12 @@ create table Payments (
     updated_at timestamp
 );
 
-create type ProgramStatus as enum ('active'),
-('completed'),
-('pending'),
-('cancelled');
+create type ProgramStatus as enum (
+    'active',
+    'completed',
+    'pending',
+    'cancelled'
+);
 
 create table ProgramCompletions (
     id bigint primary key generated always as identity,
