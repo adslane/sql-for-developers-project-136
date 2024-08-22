@@ -3,7 +3,7 @@ create table courses (
     title varchar(255),
     description text,
     created_at timestamp default current_timestamp,
-    updated_at timestamp default current_timestamp
+    updated_at timestamp default current_timestamp,
     deleted_at timestamp
 );
 
