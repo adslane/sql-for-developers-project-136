@@ -4,12 +4,13 @@ create table courses (
     description text,
     created_at timestamp default current_timestamp,
     updated_at timestamp default current_timestamp
+    deleted_at timestamp
 );
 
 create table modules (
     id bigint primary key generated always as identity,
-    name varchar(255),
-    body text,
+    title varchar(255),
+    description text,
     created_at timestamp default current_timestamp,
     updated_at timestamp default current_timestamp,
     deleted_at timestamp
@@ -37,8 +38,8 @@ create table lessons (
 );
 
 create table course_modules (
-    module_id bigint references modules (id),
     course_id bigint references courses (id),
+    module_id bigint references modules (id),
     primary key (module_id, course_id)
 );
 
