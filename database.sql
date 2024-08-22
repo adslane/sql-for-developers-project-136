@@ -1,170 +1,173 @@
-create table Courses (
+create table courses (
     id bigint primary key generated always as identity,
-    name varchar(255),
-    body text,
+    title varchar(255),
+    description text,
     created_at timestamp default current_timestamp,
     updated_at timestamp default current_timestamp
 );
 
-create table Modules (
+create table modules (
     id bigint primary key generated always as identity,
     name varchar(255),
     body text,
     created_at timestamp default current_timestamp,
     updated_at timestamp default current_timestamp,
-    deletad_at timestamp
+    deleted_at timestamp
 );
 
-create table Programs (
+create table programs (
     id bigint primary key generated always as identity,
     name varchar(255),
-    cost int,
-    type varchar(255),
+    price int,
+    program_type varchar(255),
     created_at timestamp default current_timestamp,
     updated_at timestamp default current_timestamp
 );
 
-create table Lessons (
+create table lessons (
     id bigint primary key generated always as identity,
-    name varchar(255),
-    body text,
-    link_on_video varchar(255),
-    lesson_count int,
+    title varchar(255),
+    content text,
+    video_url varchar(255),
+    position int,
     created_at timestamp default current_timestamp,
     updated_at timestamp default current_timestamp,
-    course_id bigint references Courses (id),
-    deletad_at timestamp
+    course_id bigint references courses (id),
+    deleted_at timestamp
 );
 
-create table CourseModules (
-    module_id bigint references Modules (id),
-    course_id bigint references Courses (id),
+create table course_modules (
+    module_id bigint references modules (id),
+    course_id bigint references courses (id),
     primary key (module_id, course_id)
 );
 
-create table ProgramModules (
-    program_id bigint references Programs (id),
-    module_id bigint references Modules (id),
+create table program_modules (
+    program_id bigint references programs (id),
+    module_id bigint references modules (id),
     primary key (program_id, module_id)
 );
 
-create table TeachingGroups (
+create table teaching_groups (
     id bigint primary key generated always as identity,
-    slack varchar(255),
+    slug varchar(255),
     created_at timestamp default current_timestamp,
     updated_at timestamp default current_timestamp
 );
 
-create table Users (
+create table users (
     id bigint primary key generated always as identity,
     name varchar(255),
     email varchar(255),
     password_hash varchar(255),
     role varchar(50),
-    teaching_group bigint references TeachingGroups (id),
+    teaching_group_id bigint references teaching_groups (id),
     created_at timestamp default current_timestamp,
     updated_at timestamp default current_timestamp,
-    deletad_at timestamp
+    deleted_at timestamp
 );
 
-create type EnrollmentsStatus as enum (
+create type enrollments_status as enum (
     'active',
     'pending',
     'cancelled',
     'completed'
 );
 
-create table Enrollments (
+create table enrollments (
     id bigint primary key generated always as identity,
-    user_id bigint references Users (id),
-    program_id bigint references Programs (id),
-    status_id EnrollmentsStatus,
+    user_id bigint references users (id),
+    program_id bigint references programs (id),
+    status enrollments_status,
     created_at timestamp,
     updated_at timestamp
 );
 
-create type PaymentsStatus as enum (
+create type payments_status as enum (
     'pending',
     'paid',
     'failed',
     'refunded'
 );
 
-create table Payments (
+create table payments (
     id bigint primary key generated always as identity,
-    status_id PaymentsStatus,
-    day_payment date,
+    enrollment_id bigint references enrollments (id),
+    amount int,
+    status payments_status,
+    paid_at date,
     created_at timestamp,
     updated_at timestamp
 );
 
-create type ProgramStatus as enum (
+create type program_status as enum (
     'active',
     'completed',
     'pending',
     'cancelled'
 );
 
-create table ProgramCompletions (
+create table program_completions  (
     id bigint primary key generated always as identity,
-    user_id bigint references Users (id),
-    program_id bigint references Programs (id),
-    status_id ProgramStatus,
-    start_date date,
-    end_date date,
+    user_id bigint references users (id),
+    program_id bigint references programs (id),
+    status program_status,
+    started_at date,
+    completed_at date,
     created_at timestamp,
     updated_at timestamp
 );
 
-create table Certificates (
+create table certificates (
     id bigint primary key generated always as identity,
-    user_id bigint references Users (id),
-    program_id bigint references Programs (id),
+    user_id bigint references users (id),
+    program_id bigint references programs (id),
     url varchar(255),
-    realese_date date,
+    issued_at date,
     created_at timestamp,
     updated_at timestamp
 );
 
-create table Quizzes (
+create table quizzes (
     id bigint primary key generated always as identity,
-    lesson_id bigint references Lessons (id),
-    name varchar(255),
-    body text,
+    lesson_id bigint references lessons (id),
+    title varchar(255),
+    content text,
     created_at timestamp,
     updated_at timestamp
 );
 
-create table Exercises (
+create table exercises (
     id bigint primary key generated always as identity,
-    lesson_id bigint references Lessons (id),
+    lesson_id bigint references lessons (id),
     name varchar(255),
     url varchar(255),
     created_at timestamp,
     updated_at timestamp
 );
 
-create table Discussions (
+create table discussions (
     id bigint primary key generated always as identity,
-    lesson_id bigint references Lessons (id),
-    body text,
+    lesson_id bigint references lessons (id),
+    user_id bigint references users (id),
+    text text,
     created_at timestamp,
     updated_at timestamp
 );
 
-create type BlogStatus as enum (
+create type blog_status as enum (
     'created',
     'in moderation',
     'published',
     'archived'
 );
 
-create table Blog (
+create table blogs (
     id bigint primary key generated always as identity,
-    user_id bigint references Users (id),
-    title_article varchar(255),
-    body_article text,
-    status_id BlogStatus,
+    user_id bigint references users (id),
+    title varchar(255),
+    content text,
+    status blog_status,
     created_at timestamp,
     updated_at timestamp
 );
